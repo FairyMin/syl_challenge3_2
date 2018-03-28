@@ -1,4 +1,4 @@
-#coding:utf-8
+# -*- coding:utf-8 -*-
 
 from openpyxl import load_workbook #可以用来载入已有数据表格
 
@@ -22,20 +22,46 @@ def combine():
     #如果文当中没有combine这个sheet，则创建
     if 'combine' not in sheet_list:
         wb1.create_sheet('combine',index=2)
-    
+    #读取sheet   combine
+    sheet3 = wb1['combine']
     #读取最大行数，最大列数
     max_row_s1 = sheet1.max_row
     max_column_s1 = sheet1.max_column
 
     max_row_s2 = sheet2.max_row
     max_column_s2 = sheet2.max_column
+    
+    #创建一个字典存储sheet1中的数据,
+    #格式为： ｛'课程名称':{'创建时间':'time','学习人数':'num'}｝
+    sheet1_dic = {}
+    for i in range(2,max_row_s1):
+        sheet1_dic.setdefault(sheet1.cell(row=i,column=2).value,{'cre_time':'','num':''})
+        sheet1_dic[sheet1.cell(row=i,column=2).value]['cre_time'] = sheet1.cell(row=i,column=1).value
+        sheet1_dic[sheet1.cell(row=i,column=2).value]['num'] = sheet1.cell(row=i,column=3).value
+        
+    #创建一个字典存储sheet2中的数据
+    #格式为：｛'课程名称':{"学习时间":time}｝
+    sheet2_dic = {}
+    for j in range(2,max_row_s2):
+        sheet1_dic.setdefault(sheet2.cell(row=j,column=2).value,{'learn_time':0})
+        sheet2_dic[sheet2.cell(row=j,column=2).value]['learn_time'] = sheet2.cell(
+                row=i,column=3).value
+    
+    row_title = ['创建时间','课程名称','学习人数','学习时间']
+    sheet3.append(row_title)
+    
+    line_num=1
+    for key in sheet1_dic:
+        line_num+=1
+        sheet3.cell(row=line_num,column=2).value = key
+        sheet3.cell(row=line_num,column=1).value = sheet1_dic[key]['cre_time']
+        sheet3.cell(row=line_num,column=3).value = sheet1_dic[key]['num']
+        sheet3.cell(row=line_num,column=4).value = sheet2_dic[key]['learn_time']
 
-    for i in range(1,max_row_s1+1):
-        for j in range(1,max_column_s1+1):  #chr(97)='a'
-           # n = chr(j)
-           # bh='%s%d'%(j,i)
-            print(sheet1.cell(row=i,column=j).value,end=" ")
-        print()
+#    for i in range(1,max_row_s1+1):
+#        for j in range(1,max_column_s1+1):  #chr(97)='a'
+#            sheet3.cell(row=i,column=j).value = sheet1.cell(row=i,column=j).value
+    
 
 
     #test：获取1，10行中的第2列数据
