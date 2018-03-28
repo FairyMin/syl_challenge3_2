@@ -43,9 +43,8 @@ def combine():
     #格式为：｛'课程名称':{"学习时间":time}｝
     sheet2_dic = {}
     for j in range(2,max_row_s2):
-        sheet1_dic.setdefault(sheet2.cell(row=j,column=2).value,{'learn_time':0})
-        sheet2_dic[sheet2.cell(row=j,column=2).value]['learn_time'] = sheet2.cell(
-                row=i,column=3).value
+        sheet2_dic.setdefault(sheet2.cell(row=j,column=2).value,{'learn_time':0})
+        sheet2_dic[sheet2.cell(row=j,column=2).value]['learn_time'] = sheet2.cell(row=i,column=3).value
     
     row_title = ['创建时间','课程名称','学习人数','学习时间']
     sheet3.append(row_title)
@@ -56,7 +55,8 @@ def combine():
         sheet3.cell(row=line_num,column=2).value = key
         sheet3.cell(row=line_num,column=1).value = sheet1_dic[key]['cre_time']
         sheet3.cell(row=line_num,column=3).value = sheet1_dic[key]['num']
-        sheet3.cell(row=line_num,column=4).value = sheet2_dic[key]['learn_time']
+        if key in sheet2_dic:
+            sheet3.cell(row=line_num,column=4).value = sheet2_dic[key]['learn_time']
 
 #    for i in range(1,max_row_s1+1):
 #        for j in range(1,max_column_s1+1):  #chr(97)='a'
