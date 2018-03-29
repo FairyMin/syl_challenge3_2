@@ -83,9 +83,51 @@ def split():
     2.将数据按时间分割
     3.写入不同的数据表中
     '''
-    pass
+    #读取sheet   combine
+    wb = load_workbook('/home/shiyanlou/Code/courses.xlsx')
+    sheet3 = wb['combine']
 
-
+    #获取sheet combine的最大行数于列数
+    max_row_s3 = sheet3.max_row
+    max_column_s3 = sheet3.max_column
+    
+    #将读取的数据存储在字典里
+    #格式为：{'年份'：[{'课程名称':"name",'学习人数':num,'学习时间':learn_time},{},..]}
+    info_dic = {}
+    year_set = set()
+    for i in range(2,max_row_s3+1):
+        x_a = sheet3.cell(row=i,column=1).value
+        year_set.add(x_a.year)
+        if x_a.year not in info_dic.keys():
+            info_dic[x_a.year] = []
+        for j in year_set:
+            if j == x_a.year:
+                info_dic[j].append({"c_name":sheet3.cell(row=i,column=2).value,
+                        "num":sheet3.cell(row=i,column=3).value,
+                        "learn_time":sheet3.cell(row=i,column=4).value,
+                        "cre_time":sheet3.cell(row=i,column=1).value
+                        })
+    wb.close()
+    #print(info_dic[2013])
+    #将数据存入excel文件
+    for year in info_dic.keys():
+        wb_new = Workbook()
+        wb_new.save('/home/shiyanlou/Code/%s.xlsx'%year)
+        wb_new.create_sheet('%s'%year,index=0)
+        sname = wb.get_sheet_names()
+        print(sname)
+        sheet_new = wb['%s'%str(year)]
+        row_new=1
+        row_title = ['创建时间','课程名称','学习人数','学习时间']
+        sheet_new.append(row_title)
+        for i in info_dic[year]:
+            row_new += 1
+            sheet_new.cell(row=row_new,column=1).value = i['cre_time']
+            sheet_new.cell(row=row_new,column=2).value = i['c_name']
+            sheet_new.cell(row=row_new,column=3).value = i['num']
+            sheet_new.cell(row=row_new,column=4).value = i['learn_time']
+        wb_new.save('/home/shiyanlou/Code/%s.xlsx'%year)
+        wb_new.close()
 #执行
 if __name__ == '__main__':
     combine()
