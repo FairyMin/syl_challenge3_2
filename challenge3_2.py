@@ -112,11 +112,11 @@ def split():
     #将数据存入excel文件
     for year in info_dic.keys():
         wb_new = Workbook()
-        wb_new.save('/home/shiyanlou/Code/%s.xlsx'%year)
+        #wb_new.save('/home/shiyanlou/Code/%s.xlsx'%year
         wb_new.create_sheet('%s'%year,index=0)
-        sname = wb.get_sheet_names()
+        sname = wb_new.get_sheet_names()
         print(sname)
-        sheet_new = wb['%s'%str(year)]
+        sheet_new = wb_new['%s'%str(year)]
         row_new=1
         row_title = ['创建时间','课程名称','学习人数','学习时间']
         sheet_new.append(row_title)
@@ -126,6 +126,8 @@ def split():
             sheet_new.cell(row=row_new,column=2).value = i['c_name']
             sheet_new.cell(row=row_new,column=3).value = i['num']
             sheet_new.cell(row=row_new,column=4).value = i['learn_time']
+
+        wb_new.remove_sheet('Sheet')
         wb_new.save('/home/shiyanlou/Code/%s.xlsx'%year)
         wb_new.close()
 #执行
